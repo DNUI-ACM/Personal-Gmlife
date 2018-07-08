@@ -47,13 +47,13 @@ public:
         Pointer p;
     public:
         reverse_iterator(Pointer _p=NULL):p(_p){}
-        void operator ++(int){
+        reverse_iterator operator ++(int){
             Pointer p2=p;
             --p;
             return p2;
         }
         reverse_iterator operator ++(){return --p;}
-        void operator --(int){
+        reverse_iterator operator --(int){
             Pointer p2=p;
             ++p;
             return p2;
