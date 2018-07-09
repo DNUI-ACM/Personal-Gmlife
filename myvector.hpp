@@ -1,6 +1,7 @@
 #include<cstdio>
 #include<cstdlib>
 #include<cstddef>
+#include<initializer_list>
 #ifndef MY_VECTOR_WC
 #define MY_VECTOR_WC
 const int defult_capacity = 4 ;
@@ -21,11 +22,7 @@ private:
     size_type len;
     size_type capcity;
 public:
-    vector(){
-        len=0;
-        capcity=defult_capacity;
-        head= new  value_type[capcity];
-    }
+    vector():len(0),capcity(defult_capacity),head(new value_type[capcity]){}
     vector(size_type n,size_type a){
         len=n;
         capcity=2*n;
@@ -37,16 +34,26 @@ public:
         len=n;
         capcity=2*n;
         head= new value_type[capcity];
+        for (int i = 0; i < n; ++i)
+        head[i]=0;
+    }
+    vector(std::initializer_list<value_type> init){
+        len=init.size();
+        capcity=2*len;
+        head= new value_type[capcity];
+        int i=0;
+        for(auto n:init)
+            head[i++]=n;
     }
     ~vector(){delete[] head;}
-    const vector & operator= (const vector & ){return *this;}
+    vector & operator= (const vector & ){return *this;}
     value_type & operator[] (value_type i){return head[i];}
     class reverse_iterator
     {
     private:
         Pointer p;
     public:
-        reverse_iterator(Pointer _p=NULL):p(_p){}
+        reverse_iterator (Pointer _p=NULL):p(_p){}
         reverse_iterator operator ++(int){
             Pointer p2=p;
             --p;
@@ -87,20 +94,19 @@ public:
     bool empty() const { return size() == 0; }
     reference back() const { return head[ len-1 ]; }
 private:
-void resize( size_type newlen ){
-        if( newlen > capcity )
-            ReAllocate( newlen*2 );
-        len = newlen;
+void resize( size_type new_len ){
+        if( new_len > capcity )
+            reallocate( new_len*2 );
+        len = new_len;
     }
-void ReAllocate( size_type newCapacity ){
-        if( newCapacity < len ) return;
-
-        T *oldArray = head;
-        head = new T[ newCapacity ];
+void reallocate( size_type new_cap ){
+        if( new_cap < len ) return;
+        value_type *old = head;
+        head = new value_type[ new_cap ];
         for( int k = 0; k < len; k++ )
-            head[k] = oldArray[k];
-        capcity = newCapacity;
-        delete [] oldArray;
+            head[k] = old[k];
+        capcity = new_cap;
+        delete [] old;
     }
 public:
     void reserve(size_type new_cap)
@@ -120,12 +126,12 @@ public:
     }
     void push_back(const value_type x){
         if(len == capcity)
-            ReAllocate(2*capcity+1);
+            reallocate(2*capcity+1);
         head[len++]=x;
     }
     void push_back(const iterator x){
         if(len == capcity)
-            ReAllocate(2*capcity+1);
+            reallocate(2*capcity+1);
         head[len++]=*x;
     }
     void pop_back() {
@@ -139,25 +145,26 @@ public:
     }
     iterator insert( iterator it, const_reference value ){
         if(len == capcity)
-            ReAllocate(2*capcity + 1);
+            reallocate(2*capcity + 1);
         for (auto i = end()-1; i != it; --i)
                 *i=*(i-1);
                 *it=value;
         len++;
+        return it;
     }
     iterator insert( size_type pos, const_reference value ){
         if(len == capcity)
-            ReAllocate(2*capcity + 1);
+            reallocate(2*capcity + 1);
         for (auto i = end()-1; i > pos; --i)
                 head[i]=head[i-1];
                 head[pos]=value;
         len++;
+        return &head[pos];
     }
     iterator erase(size_type pos)
     {
         if(len==0)
             exit(1);
-
         for(int i=pos;i<len;i++)
             head[i]=head[i+1];
         len--;
@@ -169,7 +176,10 @@ public:
         for (auto i = it; i != end(); ++i)
             *i=*(i+1);
         len--;
+        if(len)
         return it;
+        else
+        return end();
     }
     void swap( vector& other ) {
         Pointer temp=other.head;
