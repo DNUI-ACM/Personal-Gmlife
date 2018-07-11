@@ -4,11 +4,10 @@
 #include<initializer_list>
 #ifndef MY_VECTOR_WC
 #define MY_VECTOR_WC
-const int defult_capacity = 4 ;
+static const int defult_capacity = 4 ;
 template <typename T >
 class vector{
 public:
-    typedef T* iterator;
     typedef T* Pointer;
     typedef T value_type;
     typedef T& reference;
@@ -48,6 +47,30 @@ public:
     ~vector(){delete[] head;}
     vector & operator= (const vector & ){return *this;}
     value_type & operator[] (value_type i){return head[i];}
+    class iterator
+    {
+    private:
+        Pointer p;
+    public:
+        iterator (Pointer _p=NULL):p(_p){}
+        iterator operator ++(int){
+            Pointer p2=p;
+            ++p;
+            return p2;
+        }
+        iterator operator ++(){return ++p;}
+        iterator operator --(int){
+            Pointer p2=p;
+            --p;
+            return p2;
+        }
+        iterator operator --(){return --p;}
+        iterator operator [](int i){return p+i;}
+        friend bool operator == (const iterator &lsh,const iterator &rsh){return lsh.p==rsh.p;}
+        friend bool operator != (const iterator &lsh,const iterator &rsh){return lsh.p!=rsh.p;}
+        value_type operator *(){return *p;}
+        value_type operator ->(){return &p;}
+    };
     class reverse_iterator
     {
     private:
@@ -67,8 +90,8 @@ public:
         }
         reverse_iterator operator --(){return ++p;}
         reverse_iterator operator [](int i){return p+i;}
-        bool operator == (const reverse_iterator &it){return p==it.p;}
-        bool operator != (const reverse_iterator &it){return p!=it.p;}
+        friend bool operator == (const reverse_iterator &lsh,const reverse_iterator &rsh){return lsh.p==rsh.p;}
+        friend bool operator != (const reverse_iterator &lsh,const reverse_iterator &rsh){return lsh.p!=rsh.p;}
         value_type operator *(){return *p;}
     };
 public:
@@ -214,4 +237,4 @@ public:
     }
 };
 #endif
-//增加了初始化列表
+//虽然专业要求接口写类外，但是写写好麻烦啊！我不是专业的，就不写外面了。
