@@ -22,24 +22,15 @@ private:
     size_type capcity;
 public:
     vector():len(0),capcity(defult_capacity),head(new value_type[capcity]){}
-    vector(size_type n,size_type a){
-        len=n;
-        capcity=2*n;
-        head= new value_type[capcity];
+    vector(size_type n,size_type a):len(n),capcity(2*len),head(new value_type[capcity]){
         for (int i = 0; i < n; ++i)
         head[i]=a;
     }
-    explicit vector(size_type n){
-        len=n;
-        capcity=2*n;
-        head= new value_type[capcity];
+    explicit vector(size_type n):len(n),capcity(2*len),head(new value_type[capcity]){
         for (int i = 0; i < n; ++i)
         head[i]=0;
     }
-    vector(std::initializer_list<value_type> init){
-        len=init.size();
-        capcity=2*len;
-        head= new value_type[capcity];
+    vector(std::initializer_list<value_type> init):len(init.size()),capcity(2*len),head(new value_type[capcity]){
         int i=0;
         for(auto n:init)
             head[i++]=n;
@@ -237,4 +228,3 @@ public:
     }
 };
 #endif
-//虽然专业要求接口写类外，但是写写好麻烦啊！我不是专业的，就不写外面了。
