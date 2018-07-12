@@ -21,22 +21,32 @@ private:
     size_type len;
     size_type capcity;
 public:
-    vector():len(0),capcity(defult_capacity),head(new value_type[capcity]){}
-    vector(size_type n,size_type a):len(n),capcity(2*len),head(new value_type[capcity]){
+    vector():len(0),capcity(defult_capacity),head(new value_type[defult_capacity]){}
+    vector(size_type n,value_type a):len(n),capcity(2*n){
+        head=new value_type[capcity];
         for (int i = 0; i < n; ++i)
         head[i]=a;
     }
-    explicit vector(size_type n):len(n),capcity(2*len),head(new value_type[capcity]){
+    explicit vector(size_type n):len(n),capcity(2*n){
+        head=new value_type[capcity];
         for (int i = 0; i < n; ++i)
         head[i]=0;
     }
-    vector(std::initializer_list<value_type> init):len(init.size()),capcity(2*len),head(new value_type[capcity]){
+    vector(std::initializer_list<value_type> init){
+        len=init.size();
+        capcity=2*len;
+        head=new value_type[capcity];
         int i=0;
         for(auto n:init)
             head[i++]=n;
     }
     ~vector(){delete[] head;}
-    vector & operator= (const vector & ){return *this;}
+    vector & operator= (const vector & other ){
+        this->head=other.head;
+        this->capcity=other.capcity;
+        this->len=other.len;
+        return *this;
+    }
     value_type & operator[] (value_type i){return head[i];}
     class iterator
     {
